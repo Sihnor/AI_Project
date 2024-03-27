@@ -21,14 +21,19 @@ class AI_PROJECT_API IAI_Package
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
-public:
+protected:
 
 	bool bIsCollected = false;
 
-	
-	void Collect();
+public:
+	virtual void Collect()
+	{
+		bIsCollected = true;	
+	}
 
-	void Summon();
+	virtual void Summon() = 0;
 
-	void Command();
+	virtual void Command() = 0;
+
+	bool IsCollected() const { return bIsCollected; }
 };
