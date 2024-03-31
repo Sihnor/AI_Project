@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "Project_NPC.generated.h"
 
+class UBehaviorTree;
+
 UCLASS()
 class AI_PROJECT_API AProject_NPC : public ACharacter, public IAI_Package
 {
@@ -15,27 +17,26 @@ class AI_PROJECT_API AProject_NPC : public ACharacter, public IAI_Package
 public:
 	// Sets default values for this character's properties
 	AProject_NPC();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class USphereComponent* SphereComponent;
-
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	
-	
-
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* SphereComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree* BehaviorTree;
+
+	UFUNCTION(BlueprintCallable, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 	// Implement IAI_Package interface
 	virtual void Collect() override;
 	virtual void Summon() override;
@@ -47,4 +48,8 @@ public:
 	// Get ListAi
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	UProject_DataAsset_ListAI* GetListAI() const { return this->ListAI.Get(); }
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	UBehaviorTree* GetBehaviorTree() const { return this->BehaviorTree; }
 };

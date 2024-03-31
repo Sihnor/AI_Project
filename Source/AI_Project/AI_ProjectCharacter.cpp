@@ -10,6 +10,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Actors/Resource.h"
+#include "DrawDebugHelpers.h"
+
+#define ECC_Resource		ECC_GameTraceChannel1
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -62,7 +66,7 @@ void AAI_ProjectCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -88,9 +92,9 @@ void AAI_ProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// Looking
 		EnhancedInputComponent->BindAction(this->LookAction, ETriggerEvent::Triggered, this, &AAI_ProjectCharacter::Look);
 
-		EnhancedInputComponent->BindAction(this->CommandNPCAction, ETriggerEvent::Triggered, this, &AAI_ProjectCharacter::CommandNPC);
+		EnhancedInputComponent->BindAction(this->CommandNPCAction, ETriggerEvent::Started, this, &AAI_ProjectCharacter::CommandNPC);
 
-		EnhancedInputComponent->BindAction(this->SummonNPCAction, ETriggerEvent::Triggered, this, &AAI_ProjectCharacter::SummonNPC);
+		EnhancedInputComponent->BindAction(this->SummonNPCAction, ETriggerEvent::Started, this, &AAI_ProjectCharacter::SummonNPC);
 	}
 }
 
@@ -119,18 +123,55 @@ void AAI_ProjectCharacter::Move(const FInputActionValue& Value)
 void AAI_ProjectCharacter::Look(const FInputActionValue& Value)
 {
 	if (Controller == nullptr) return;
-
-	// input is a Vector2D
-	const FVector2D LookAxisVector = Value.Get<FVector2D>();
+	
+	const FVector2D lookAxisVector = Value.Get<FVector2D>();
 
 	// add yaw and pitch input to controller
-	AddControllerYawInput(LookAxisVector.X);
+	AddControllerYawInput(lookAxisVector.X);
 	//AddControllerPitchInput(LookAxisVector.Y);
 }
 
 void AAI_ProjectCharacter::CommandNPC(const FInputActionValue& Value)
 {
-	return;
+	const FVector start = this->GetActorLocation()  + this->GetActorForwardVector() * this->SummonDistance;
+	const FVector end = start + this->GetActorForwardVector() * this->SummonDistance;
+	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonDistance, 200, 50));
+	TArray<FHitResult> hitResults;
+	
+	const FQuat rotation = FQuat::FindBetween(FVector::ForwardVector, GetActorForwardVector());
+
+
+	DrawDebugLine(GetWorld(), start, end, FColor::Purple, false, 1.0f);
+	DrawDebugBox(GetWorld(), start, boxCollision.GetBox(), rotation, FColor::Purple, false, 1.0f);
+	
+	//DrawDebugBox(GetWorld(), start, boxCollision.GetBox(), rotation, FColor::Purple, false, 5.0f);
+	const bool isHit = GetWorld()->SweepMultiByChannel(hitResults, start, start, rotation, ECC_Resource, boxCollision);
+
+	
+	if (!isHit)return;
+
+	FCollisionShape sphereCollision = FCollisionShape::MakeSphere(50);
+	
+	FVector hitLocation = FVector::Zero();
+
+	for (FHitResult HitResult : hitResults)
+	{
+		// First location save
+		if (hitLocation == FVector::Zero())
+		{
+			hitLocation = HitResult.Location;
+		}
+		
+		if (HitResult.Location.SquaredLength() < hitLocation.SquaredLength())
+		{
+			hitLocation = HitResult.Location;
+		}
+		//DrawDebugSphere(GetWorld(), HitResult.Location, 50, 10, FColor::Red, false, 5.0f);
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetActorLocation().ToString())));
+	}
+	
+	
 }
 
 void AAI_ProjectCharacter::SummonNPC(const FInputActionValue& Value)

@@ -23,17 +23,17 @@ class AI_PROJECT_API IAI_Package
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 protected:
 
-	bool bIsCollected = false;
+	bool bIsGrouped = false;
 
 public:
 	virtual void Collect()
 	{
-		bIsCollected = true;	
+		bIsGrouped = true;	
 	}
 
 	virtual void Summon() = 0;
 
 	virtual void Command() = 0;
 
-	bool IsCollected() const { return bIsCollected; }
+	bool IsCollected() const { return bIsGrouped; }
 };

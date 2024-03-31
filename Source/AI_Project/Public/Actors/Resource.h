@@ -4,12 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ResourceType.h"
 #include "Resource.generated.h"
+
+
 
 UCLASS()
 class AI_PROJECT_API AResource : public AActor
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Resource")
+	USceneComponent* Root;
+	
+	UPROPERTY(EditAnywhere, Category = "Resource")
+	UStaticMeshComponent* Mesh;
+	
+	UPROPERTY()
+	EResourceType ResourceType;
 
 public:
 	// Sets default values for this actor's properties

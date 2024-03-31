@@ -20,6 +20,7 @@ class AAI_ProjectCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+#pragma region Properties
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
@@ -50,6 +51,13 @@ class AAI_ProjectCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SummonNPCAction;
 
+public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC")
+	float SummonDistance = 1000.0f;
+
+#pragma endregion
+	
 public:
 	AAI_ProjectCharacter();
 	

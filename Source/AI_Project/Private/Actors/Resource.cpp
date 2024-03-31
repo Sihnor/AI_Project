@@ -9,6 +9,12 @@ AResource::AResource()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	this->Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = this->Root;
+	
+	this->Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	this->Mesh->SetupAttachment(this->Root);
 }
 
 // Called when the game starts or when spawned
