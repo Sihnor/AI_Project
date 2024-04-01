@@ -10,10 +10,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "Actors/Resource.h"
 #include "DrawDebugHelpers.h"
+#include "Actors/Stone.h"
+#include "Actors/Tree.h"
 
 #define ECC_Resource		ECC_GameTraceChannel1
+#define ECC_NPC				ECC_GameTraceChannel2
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -25,17 +27,12 @@ AAI_ProjectCharacter::AAI_ProjectCharacter()
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	// Don't rotate when the controller rotates. Let that just affect the camera.
 	this->bUseControllerRotationPitch = false;
 	this->bUseControllerRotationYaw = false;
 	this->bUseControllerRotationRoll = false;
 
-	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
-
-	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
-	// instead of recompiling to adjust them
+	GetCharacterMovement()->bOrientRotationToMovement = true; 	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
@@ -43,21 +40,17 @@ AAI_ProjectCharacter::AAI_ProjectCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
 	this->CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	this->CameraBoom->SetupAttachment(RootComponent);
-	this->CameraBoom->TargetArmLength = 1000.0f; // The camera follows at this distance behind the character
+	this->CameraBoom->TargetArmLength = 1000.0f;
 	this->CameraBoom->SocketOffset = FVector(600.f, 0.f, 600.f);
-	this->CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	this->CameraBoom->bUsePawnControlRotation = true;
 
 	// Create a follow camera
 	this->FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	this->FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	this->FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	this->FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	this->FollowCamera->bUsePawnControlRotation = false;
 	this->FollowCamera->SetRelativeRotation(FRotator(0.f, 320.f, 0.f));
-
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
 void AAI_ProjectCharacter::BeginPlay()
@@ -74,6 +67,8 @@ void AAI_ProjectCharacter::BeginPlay()
 		}
 	}
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -92,9 +87,9 @@ void AAI_ProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// Looking
 		EnhancedInputComponent->BindAction(this->LookAction, ETriggerEvent::Triggered, this, &AAI_ProjectCharacter::Look);
 
-		EnhancedInputComponent->BindAction(this->CommandNPCAction, ETriggerEvent::Started, this, &AAI_ProjectCharacter::CommandNPC);
+		EnhancedInputComponent->BindAction(this->CommandNPCAction, ETriggerEvent::Triggered, this, &AAI_ProjectCharacter::CommandNPC);
 
-		EnhancedInputComponent->BindAction(this->SummonNPCAction, ETriggerEvent::Started, this, &AAI_ProjectCharacter::SummonNPC);
+		EnhancedInputComponent->BindAction(this->SummonNPCAction, ETriggerEvent::Triggered, this, &AAI_ProjectCharacter::SummonNPC);
 	}
 }
 
@@ -126,55 +121,107 @@ void AAI_ProjectCharacter::Look(const FInputActionValue& Value)
 	
 	const FVector2D lookAxisVector = Value.Get<FVector2D>();
 
-	// add yaw and pitch input to controller
 	AddControllerYawInput(lookAxisVector.X);
 	//AddControllerPitchInput(LookAxisVector.Y);
 }
 
 void AAI_ProjectCharacter::CommandNPC(const FInputActionValue& Value)
 {
-	const FVector start = this->GetActorLocation()  + this->GetActorForwardVector() * this->SummonDistance;
+	FHitResult hitResults;
+	
+	const bool bIsHit = GetClosestResource(hitResults);
+	if (!bIsHit)return;
+
+	TArray<FHitResult> hitResultsInSphere = this->GetSameResourceTypeInSphere(hitResults.GetActor());
+	
+	for (auto HitResult : hitResultsInSphere)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
+	}
+}
+
+bool AAI_ProjectCharacter::GetAllResourcesInBox(TArray<FHitResult>& result)
+{
+	const FVector start = this->GetActorLocation() + this->GetActorForwardVector() * this->SummonDistance;
 	const FVector end = start + this->GetActorForwardVector() * this->SummonDistance;
 	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonDistance, 200, 50));
-	TArray<FHitResult> hitResults;
 	
 	const FQuat rotation = FQuat::FindBetween(FVector::ForwardVector, GetActorForwardVector());
 
-
-	DrawDebugLine(GetWorld(), start, end, FColor::Purple, false, 1.0f);
 	DrawDebugBox(GetWorld(), start, boxCollision.GetBox(), rotation, FColor::Purple, false, 1.0f);
-	
-	//DrawDebugBox(GetWorld(), start, boxCollision.GetBox(), rotation, FColor::Purple, false, 5.0f);
-	const bool isHit = GetWorld()->SweepMultiByChannel(hitResults, start, start, rotation, ECC_Resource, boxCollision);
 
-	
-	if (!isHit)return;
+	return GetWorld()->SweepMultiByChannel(result, start, start, rotation, ECC_Resource, boxCollision);
+}
 
-	FCollisionShape sphereCollision = FCollisionShape::MakeSphere(50);
-	
+bool AAI_ProjectCharacter::GetClosestResource(FHitResult& results)
+{
+	const FVector start = this->GetActorLocation() + this->GetActorForwardVector() * this->SummonDistance;
+	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonDistance, 200, 50));
+
+	TArray<FHitResult> hitResults;
+	bool bIsHit = GetAllResourcesInBox(hitResults);
+
 	FVector hitLocation = FVector::Zero();
-
-	for (FHitResult HitResult : hitResults)
+	
+	for (FHitResult hitResult : hitResults)
 	{
 		// First location save
 		if (hitLocation == FVector::Zero())
 		{
-			hitLocation = HitResult.Location;
+			results = hitResult;
+			hitLocation = hitResult.GetActor()->GetActorLocation();
 		}
 		
-		if (HitResult.Location.SquaredLength() < hitLocation.SquaredLength())
+		if ((hitResult.GetActor()->GetActorLocation() - this->GetActorLocation()).SquaredLength() <
+			(hitLocation - this->GetActorLocation()).SquaredLength())
 		{
-			hitLocation = HitResult.Location;
+			results = hitResult;
+			hitLocation = hitResult.GetActor()->GetActorLocation();
 		}
-		//DrawDebugSphere(GetWorld(), HitResult.Location, 50, 10, FColor::Red, false, 5.0f);
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetActorLocation().ToString())));
+	}
+
+	return bIsHit;
+}
+
+TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(const AActor* const closestResource)
+{
+	TArray<FHitResult> hitResults;
+	GetWorld()->SweepMultiByChannel(hitResults, closestResource->GetActorLocation(), closestResource->GetActorLocation(), FQuat::Identity, ECC_Resource, FCollisionShape::MakeSphere(this->SphereRadius));
+	DrawDebugSphere(GetWorld(), closestResource->GetActorLocation(), this->SphereRadius, 10, FColor::Green, false, 1.0f);
+
+	TArray<FHitResult> sameResourceTypeInSphere;
+
+	for (auto hitResult : hitResults)
+	{
+		// Closest resource is a tree and hit result is a tree
+		if (closestResource->IsA(ATree::StaticClass()) && hitResult.GetActor()->IsA(ATree::StaticClass()))
+		{
+			sameResourceTypeInSphere.Add(hitResult);
+		}
+
+		// Closest resource is a stone and hit result is a stone
+		if (closestResource->IsA(AStone::StaticClass()) && hitResult.GetActor()->IsA(AStone::StaticClass()))
+		{
+			sameResourceTypeInSphere.Add(hitResult);
+		}
 	}
 	
-	
+	return sameResourceTypeInSphere;
 }
 
 void AAI_ProjectCharacter::SummonNPC(const FInputActionValue& Value)
 {
-	return;
+	const FVector start = this->GetActorLocation();
+	const FCollisionShape sphereCollision = FCollisionShape::MakeSphere(this->SummonDistance);
+	TArray<FHitResult> hitResults;
+
+	DrawDebugSphere(GetWorld(), start, sphereCollision.GetSphereRadius(), 10, FColor::Cyan, false, 1.0f);
+	GetWorld()->SweepMultiByChannel(hitResults, start, start, FQuat::Identity, ECC_NPC, sphereCollision);
+	
+	//for (FHitResult HitResult : hitResults)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
+	//}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hit: %d"), hitResults.Num()));
+	//return;
 }

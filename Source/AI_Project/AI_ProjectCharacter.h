@@ -51,6 +51,9 @@ class AAI_ProjectCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SummonNPCAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	int SphereRadius = 500;
+
 public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC")
@@ -87,5 +90,10 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+	bool GetAllResourcesInBox(TArray<FHitResult>& result);
+	bool GetClosestResource(FHitResult& results);
+	TArray<FHitResult> GetSameResourceTypeInSphere(const AActor* const closestResource);
 };
 
