@@ -15,6 +15,10 @@ class AI_PROJECT_API AProject_NPC_AIController : public AAIController
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+	TObjectPtr<class UProject_DataAsset_ListAI> ListAI;
+
+public:
 	AProject_NPC_AIController(FObjectInitializer const& ObjectInitializer);
 
 	virtual void OnPossess(APawn* InPawn) override;

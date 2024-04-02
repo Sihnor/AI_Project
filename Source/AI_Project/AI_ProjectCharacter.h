@@ -94,6 +94,6 @@ public:
 private:
 	bool GetAllResourcesInBox(TArray<FHitResult>& result);
 	bool GetClosestResource(FHitResult& results);
-	TArray<FHitResult> GetSameResourceTypeInSphere(const AActor* const closestResource);
+	TArray<FHitResult> GetSameResourceTypeInSphere(FHitResult closestResource);
 };
 

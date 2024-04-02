@@ -19,10 +19,22 @@ public:
 	UProject_DataAsset_ListAI();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	TArray<AProject_NPC*> ListAI;
+	TArray<AProject_NPC*> ListOfAllNPCs;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	TArray<AProject_NPC*> ListOfAllFollowingNPCs;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	TArray<AProject_NPC*> ListOfAllCommandedNPCs;
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void AddAI(AProject_NPC* AI);
+	void RegisterAI(AProject_NPC* AI);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void AddFollowingAI(AProject_NPC* AI);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void AddCommandedAI(AProject_NPC* AI);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void RemoveAI(AProject_NPC* AI);

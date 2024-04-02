@@ -8,8 +8,9 @@
 #include "Resource.generated.h"
 
 
+class AProject_NPC;
 
-UCLASS()
+UCLASS(Abstract, Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class AI_PROJECT_API AResource : public AActor
 {
 	GENERATED_BODY()
@@ -21,9 +22,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Resource")
 	UStaticMeshComponent* Mesh;
 	
-	UPROPERTY()
-	EResourceType ResourceType;
-
 public:
 	// Sets default values for this actor's properties
 	AResource();

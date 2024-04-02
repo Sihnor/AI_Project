@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NPCState.h"
 #include "UObject/Interface.h"
 #include "AI_Package.generated.h"
 
@@ -23,17 +24,18 @@ class AI_PROJECT_API IAI_Package
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 protected:
 
-	bool bIsGrouped = false;
+	ENPCState NPCState = ENPCState::Masterless;
+	
 
 public:
 	virtual void Collect()
 	{
-		bIsGrouped = true;	
+		this->NPCState = ENPCState::Following;
 	}
 
 	virtual void Summon() = 0;
 
 	virtual void Command() = 0;
 
-	bool IsCollected() const { return bIsGrouped; }
+	ENPCState IsCollected() const { return this->NPCState; }
 };

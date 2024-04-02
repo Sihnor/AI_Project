@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CollectibleRes.h"
 #include "Resource.h"
 #include "Stone.generated.h"
 
 UCLASS()
-class AI_PROJECT_API AStone : public AResource
+class AI_PROJECT_API AStone : public AResource, public ICollectibleRes
 {
 	GENERATED_BODY()
 
@@ -15,11 +16,10 @@ public:
 	// Sets default values for this actor's properties
 	AStone();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	void RegisterNPC();
+	void UnregisterNPC();
+
+	EResourceType GetResourceType();
+	int32 GetRemainingPlaces();
 };

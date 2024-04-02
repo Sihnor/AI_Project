@@ -11,18 +11,27 @@ ATree::ATree()
 	PrimaryActorTick.bCanEverTick = true;
 
 	this->ResourceType = EResourceType::Tree;
+	this->PlacesNPCsCanCollect = 4;
+	this->RemainingPlacesNPCsCanCollect = 4;
 }
 
-// Called when the game starts or when spawned
-void ATree::BeginPlay()
+void ATree::RegisterNPC()
 {
-	Super::BeginPlay();
-	
+	this->RemainingPlacesNPCsCanCollect--;
 }
 
-// Called every frame
-void ATree::Tick(float DeltaTime)
+void ATree::UnregisterNPC()
 {
-	Super::Tick(DeltaTime);
+	this->RemainingPlacesNPCsCanCollect++;
+}
+
+EResourceType ATree::GetResourceType()
+{
+	return this->ResourceType;
+}
+
+int32 ATree::GetRemainingPlaces()
+{
+	return this->RemainingPlacesNPCsCanCollect;
 }
 

@@ -132,7 +132,7 @@ void AAI_ProjectCharacter::CommandNPC(const FInputActionValue& Value)
 	const bool bIsHit = GetClosestResource(hitResults);
 	if (!bIsHit)return;
 
-	TArray<FHitResult> hitResultsInSphere = this->GetSameResourceTypeInSphere(hitResults.GetActor());
+	TArray<FHitResult> hitResultsInSphere = this->GetSameResourceTypeInSphere(hitResults);
 	
 	for (auto HitResult : hitResultsInSphere)
 	{
@@ -183,29 +183,31 @@ bool AAI_ProjectCharacter::GetClosestResource(FHitResult& results)
 	return bIsHit;
 }
 
-TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(const AActor* const closestResource)
+TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(FHitResult closestResource)
 {
 	TArray<FHitResult> hitResults;
-	GetWorld()->SweepMultiByChannel(hitResults, closestResource->GetActorLocation(), closestResource->GetActorLocation(), FQuat::Identity, ECC_Resource, FCollisionShape::MakeSphere(this->SphereRadius));
-	DrawDebugSphere(GetWorld(), closestResource->GetActorLocation(), this->SphereRadius, 10, FColor::Green, false, 1.0f);
+	GetWorld()->SweepMultiByChannel(hitResults,
+		closestResource.GetActor()->GetActorLocation(),
+		closestResource.GetActor()->GetActorLocation(),
+		FQuat::Identity, ECC_Resource, FCollisionShape::MakeSphere(this->SphereRadius));
+	DrawDebugSphere(GetWorld(), closestResource.GetActor()->GetActorLocation(), this->SphereRadius, 10, FColor::Green, false, 1.0f);
 
 	TArray<FHitResult> sameResourceTypeInSphere;
 
-	for (auto hitResult : hitResults)
+	for (FHitResult hitResult : hitResults)
 	{
-		// Closest resource is a tree and hit result is a tree
-		if (closestResource->IsA(ATree::StaticClass()) && hitResult.GetActor()->IsA(ATree::StaticClass()))
-		{
-			sameResourceTypeInSphere.Add(hitResult);
-		}
+		// Check if the actor implements the ICollectibleRes interface
+		if (!hitResult.GetActor()->GetClass()->ImplementsInterface(UCollectibleRes::StaticClass())) continue;
 
-		// Closest resource is a stone and hit result is a stone
-		if (closestResource->IsA(AStone::StaticClass()) && hitResult.GetActor()->IsA(AStone::StaticClass()))
-		{
-			sameResourceTypeInSphere.Add(hitResult);
-		}
+		// Get the ICollectibleRes interface
+		ICollectibleRes* collectibleRes = Cast<ICollectibleRes>(hitResult.GetActor());
+
+		// Check if the resource type is the same
+		if (collectibleRes->GetResourceType() != Cast<ICollectibleRes>(closestResource.GetActor())->GetResourceType()) continue;
+
+		sameResourceTypeInSphere.Add(hitResult);
 	}
-	
+
 	return sameResourceTypeInSphere;
 }
 

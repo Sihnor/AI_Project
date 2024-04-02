@@ -43,7 +43,7 @@ void AProject_NPC::Collect()
 {
 	IAI_Package::Collect();
 
-	if (this->ListAI) this->ListAI->AddAI(this);
+	if (this->ListAI) this->ListAI->RegisterAI(this);
 }
 
 void AProject_NPC::Summon()
@@ -58,7 +58,7 @@ void AProject_NPC::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(OtherActor->GetOwner()))
 	{
-		if (!this->IsCollected())
+		if (this->IsCollected() == ENPCState::Masterless)
 		{
 			this->Collect();
 		}

@@ -11,18 +11,26 @@ AStone::AStone()
 	PrimaryActorTick.bCanEverTick = true;
 
 	this->ResourceType = EResourceType::Stone;
+	this->PlacesNPCsCanCollect = 8;
+	this->RemainingPlacesNPCsCanCollect = 8;
 }
 
-// Called when the game starts or when spawned
-void AStone::BeginPlay()
+void AStone::RegisterNPC()
 {
-	Super::BeginPlay();
-	
+	this->RemainingPlacesNPCsCanCollect--;
 }
 
-// Called every frame
-void AStone::Tick(float DeltaTime)
+void AStone::UnregisterNPC()
 {
-	Super::Tick(DeltaTime);
+	this->RemainingPlacesNPCsCanCollect++;
 }
 
+EResourceType AStone::GetResourceType()
+{
+	return this->ResourceType;
+}
+
+int32 AStone::GetRemainingPlaces()
+{
+	return this->RemainingPlacesNPCsCanCollect;
+}
