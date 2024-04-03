@@ -15,8 +15,11 @@ class AI_PROJECT_API AProject_NPC : public ACharacter, public IAI_Package
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameEvent")
-	TObjectPtr<class UProject_DA_GameEvent> GameEvents;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameEvents")
+	TObjectPtr<class UProject_DA_GameEvent> CommandEvent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameEvents")
+	TObjectPtr<class UProject_DA_GameEvent> SummonEvent;	
 
 public:
 	// Sets default values for this character's properties

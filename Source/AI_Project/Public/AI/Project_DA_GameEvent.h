@@ -10,8 +10,7 @@ class AResource;
 /**
  * 
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCommandResource, TArray<FHitResult>, Resources);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCommandSummon, TArray<FHitResult>, NPC);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEvent, TArray<FHitResult>, npc);
 
 UCLASS()
 class AI_PROJECT_API UProject_DA_GameEvent : public UDataAsset
@@ -20,9 +19,6 @@ class AI_PROJECT_API UProject_DA_GameEvent : public UDataAsset
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Game Event")
-	FOnCommandResource OnCommandResource;
-
-	UPROPERTY(BlueprintAssignable, Category = "Game Event")
-	FOnCommandSummon OnCommandSummon;
+	FOnEvent OnEvent;
 	
 };

@@ -45,22 +45,27 @@ class AAI_ProjectCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
 	UInputAction* CommandNPCAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SummonNPCAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	int SphereRadius = 500;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
+	int ResourceSphereRadius = 500;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UProject_DA_GameEvent> GameEvents;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
+	float SummonSphereRadius = 1000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UProject_DA_GameEvent> CommandEvent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UProject_DA_GameEvent> SummonEvent;
 
 public:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC")
-	float SummonDistance = 1000.0f;
+	
 
 #pragma endregion
 	
@@ -95,8 +100,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 private:
-	bool GetAllResourcesInBox(TArray<FHitResult>& result);
-	bool GetClosestResource(FHitResult& results);
-	TArray<FHitResult> GetSameResourceTypeInSphere(FHitResult closestResource);
+	bool GetAllResourcesInBox(TArray<FHitResult>& result) const;
+	bool GetClosestResource(FHitResult& results) const;
+	TArray<FHitResult> GetSameResourceTypeInSphere(FHitResult closestResource) const;
 };
 

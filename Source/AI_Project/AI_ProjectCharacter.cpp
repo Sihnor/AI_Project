@@ -32,7 +32,7 @@ AAI_ProjectCharacter::AAI_ProjectCharacter()
 	this->bUseControllerRotationYaw = false;
 	this->bUseControllerRotationRoll = false;
 
-	GetCharacterMovement()->bOrientRotationToMovement = true; 	
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
@@ -68,7 +68,6 @@ void AAI_ProjectCharacter::BeginPlay()
 		}
 	}
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -119,7 +118,7 @@ void AAI_ProjectCharacter::Move(const FInputActionValue& Value)
 void AAI_ProjectCharacter::Look(const FInputActionValue& Value)
 {
 	if (Controller == nullptr) return;
-	
+
 	const FVector2D lookAxisVector = Value.Get<FVector2D>();
 
 	AddControllerYawInput(lookAxisVector.X);
@@ -129,26 +128,20 @@ void AAI_ProjectCharacter::Look(const FInputActionValue& Value)
 void AAI_ProjectCharacter::CommandNPC(const FInputActionValue& Value)
 {
 	FHitResult hitResults;
-	
-	const bool bIsHit = GetClosestResource(hitResults);
-	if (!bIsHit)return;
 
-	TArray<FHitResult> hitResultsInSphere = this->GetSameResourceTypeInSphere(hitResults);
-	
-	for (auto HitResult : hitResultsInSphere)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
-	}
+	if (!GetClosestResource(hitResults)) return;
 
-	this->GameEvents->OnCommandResource.Broadcast(hitResultsInSphere);
+	const TArray<FHitResult> hitResultsInSphere = this->GetSameResourceTypeInSphere(hitResults);
+
+	if (this->CommandEvent) this->CommandEvent->OnEvent.Broadcast(hitResultsInSphere);
 }
 
-bool AAI_ProjectCharacter::GetAllResourcesInBox(TArray<FHitResult>& result)
+bool AAI_ProjectCharacter::GetAllResourcesInBox(TArray<FHitResult>& result) const
 {
-	const FVector start = this->GetActorLocation() + this->GetActorForwardVector() * this->SummonDistance;
-	const FVector end = start + this->GetActorForwardVector() * this->SummonDistance;
-	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonDistance, 200, 50));
-	
+	const FVector start = this->GetActorLocation() + this->GetActorForwardVector() * this->SummonSphereRadius;
+	const FVector end = start + this->GetActorForwardVector() * this->SummonSphereRadius;
+	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonSphereRadius, 200, 50));
+
 	const FQuat rotation = FQuat::FindBetween(FVector::ForwardVector, GetActorForwardVector());
 
 	DrawDebugBox(GetWorld(), start, boxCollision.GetBox(), rotation, FColor::Purple, false, 1.0f);
@@ -156,16 +149,16 @@ bool AAI_ProjectCharacter::GetAllResourcesInBox(TArray<FHitResult>& result)
 	return GetWorld()->SweepMultiByChannel(result, start, start, rotation, ECC_Resource, boxCollision);
 }
 
-bool AAI_ProjectCharacter::GetClosestResource(FHitResult& results)
+bool AAI_ProjectCharacter::GetClosestResource(FHitResult& results) const
 {
-	const FVector start = this->GetActorLocation() + this->GetActorForwardVector() * this->SummonDistance;
-	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonDistance, 200, 50));
+	const FVector start = this->GetActorLocation() + this->GetActorForwardVector() * this->SummonSphereRadius;
+	const FCollisionShape boxCollision = FCollisionShape::MakeBox(FVector(this->SummonSphereRadius, 200, 50));
 
 	TArray<FHitResult> hitResults;
 	bool bIsHit = GetAllResourcesInBox(hitResults);
 
 	FVector hitLocation = FVector::Zero();
-	
+
 	for (FHitResult hitResult : hitResults)
 	{
 		// First location save
@@ -174,7 +167,7 @@ bool AAI_ProjectCharacter::GetClosestResource(FHitResult& results)
 			results = hitResult;
 			hitLocation = hitResult.GetActor()->GetActorLocation();
 		}
-		
+
 		if ((hitResult.GetActor()->GetActorLocation() - this->GetActorLocation()).SquaredLength() <
 			(hitLocation - this->GetActorLocation()).SquaredLength())
 		{
@@ -186,14 +179,12 @@ bool AAI_ProjectCharacter::GetClosestResource(FHitResult& results)
 	return bIsHit;
 }
 
-TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(FHitResult closestResource)
+TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(FHitResult closestResource) const
 {
 	TArray<FHitResult> hitResults;
-	GetWorld()->SweepMultiByChannel(hitResults,
-		closestResource.GetActor()->GetActorLocation(),
-		closestResource.GetActor()->GetActorLocation(),
-		FQuat::Identity, ECC_Resource, FCollisionShape::MakeSphere(this->SphereRadius));
-	DrawDebugSphere(GetWorld(), closestResource.GetActor()->GetActorLocation(), this->SphereRadius, 10, FColor::Green, false, 1.0f);
+	GetWorld()->SweepMultiByChannel(hitResults, closestResource.GetActor()->GetActorLocation(),closestResource.GetActor()->GetActorLocation(),
+	                                FQuat::Identity, ECC_Resource, FCollisionShape::MakeSphere(this->ResourceSphereRadius));
+	DrawDebugSphere(GetWorld(), closestResource.GetActor()->GetActorLocation(), this->ResourceSphereRadius, 10, FColor::Green, false, 1.0f);
 
 	TArray<FHitResult> sameResourceTypeInSphere;
 
@@ -214,20 +205,14 @@ TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(FHitResult 
 	return sameResourceTypeInSphere;
 }
 
-void AAI_ProjectCharacter::SummonNPC(const FInputActionValue& Value)
+void AAI_ProjectCharacter::SummonNPC(const FInputActionValue& Value) 
 {
 	const FVector start = this->GetActorLocation();
-	const FCollisionShape sphereCollision = FCollisionShape::MakeSphere(this->SummonDistance);
+	const FCollisionShape sphereCollision = FCollisionShape::MakeSphere(this->SummonSphereRadius);
 	TArray<FHitResult> hitResults;
 
 	DrawDebugSphere(GetWorld(), start, sphereCollision.GetSphereRadius(), 10, FColor::Cyan, false, 1.0f);
 	GetWorld()->SweepMultiByChannel(hitResults, start, start, FQuat::Identity, ECC_NPC, sphereCollision);
-
-	this->GameEvents->OnCommandSummon.Broadcast(hitResults);
-	//for (FHitResult HitResult : hitResults)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
-	//}
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hit: %d"), hitResults.Num()));
-	//return;
+	
+	if (this->SummonEvent) this->SummonEvent->OnEvent.Broadcast(hitResults);
 }

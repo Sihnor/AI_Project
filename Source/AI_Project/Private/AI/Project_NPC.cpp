@@ -20,12 +20,6 @@ AProject_NPC::AProject_NPC()
 	this->SphereComponent->SetCollisionProfileName(TEXT("Trigger"));
 	this->SphereComponent->SetupAttachment(RootComponent);
 	this->SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AProject_NPC::OnOverlapBegin);
-
-	if (GameEvents)
-	{
-		this->GameEvents.Get()->OnCommandResource.AddUniqueDynamic(this, &AProject_NPC::Command);
-		this->GameEvents.Get()->OnCommandSummon.AddUniqueDynamic(this, &AProject_NPC::Summon);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -55,26 +49,31 @@ void AProject_NPC::Collect()
 
 void AProject_NPC::Summon(TArray<FHitResult> npcs)
 {
+	if (this->NPCState == ENPCState::Masterless) return;
+
 	for (FHitResult result : npcs)
 	{
-		if(Cast<AProject_NPC>(result.GetActor()->GetClass()) == this)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Summoned"));
-		}
+		if (result.GetActor() != this) continue;
+		
+		this->NPCState = ENPCState::Following;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Summoned"));
 	}
 }
 
 void AProject_NPC::Command(TArray<FHitResult> resources)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Commanded"));
 }
 
 void AProject_NPC::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(OtherActor->GetOwner()))
 	{
-		if (this->IsCollected() == ENPCState::Masterless)
-		{
-			this->Collect();
-		}
+		if (this->IsCollected() != ENPCState::Masterless) return;
+		
+		if (this->CommandEvent) this->CommandEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC::Command);
+		if (this->SummonEvent) this->SummonEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC::Summon);
+
+		this->Collect();
 	}
 }
