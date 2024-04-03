@@ -15,6 +15,10 @@ class AI_PROJECT_API AProject_NPC : public ACharacter, public IAI_Package
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameEvent")
+	TObjectPtr<class UProject_DA_GameEvent> GameEvents;
+
+public:
 	// Sets default values for this character's properties
 	AProject_NPC();
 	
@@ -38,9 +42,12 @@ protected:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	// Implement IAI_Package interface
+	UFUNCTION()
 	virtual void Collect() override;
-	virtual void Summon() override;
-	virtual void Command() override;
+	UFUNCTION()
+	virtual void Summon(TArray<FHitResult> npcs) override;
+	UFUNCTION()
+	virtual void Command(TArray<FHitResult> resources) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<class UProject_DataAsset_ListAI> ListAI;

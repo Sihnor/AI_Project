@@ -4,6 +4,7 @@
 #include "AI_Project/Public/AI/Project_NPC.h"
 
 #include "AI/Project_DataAsset_ListAI.h"
+#include "AI/Project_DA_GameEvent.h"
 #include "Components/SphereComponent.h"
 
 
@@ -19,6 +20,12 @@ AProject_NPC::AProject_NPC()
 	this->SphereComponent->SetCollisionProfileName(TEXT("Trigger"));
 	this->SphereComponent->SetupAttachment(RootComponent);
 	this->SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AProject_NPC::OnOverlapBegin);
+
+	if (GameEvents)
+	{
+		this->GameEvents.Get()->OnCommandResource.AddUniqueDynamic(this, &AProject_NPC::Command);
+		this->GameEvents.Get()->OnCommandSummon.AddUniqueDynamic(this, &AProject_NPC::Summon);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -46,11 +53,18 @@ void AProject_NPC::Collect()
 	if (this->ListAI) this->ListAI->RegisterAI(this);
 }
 
-void AProject_NPC::Summon()
+void AProject_NPC::Summon(TArray<FHitResult> npcs)
 {
+	for (FHitResult result : npcs)
+	{
+		if(Cast<AProject_NPC>(result.GetActor()->GetClass()) == this)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Summoned"));
+		}
+	}
 }
 
-void AProject_NPC::Command()
+void AProject_NPC::Command(TArray<FHitResult> resources)
 {
 }
 

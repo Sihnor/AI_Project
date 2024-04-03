@@ -1,0 +1,868 @@
+{
+	"folders": [
+		{
+			"name": "AI_Project",
+			"path": "."
+		},
+		{
+			"name": "UE5",
+			"path": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+		}
+	],
+	"settings": {
+		"typescript.tsc.autoDetect": "off",
+		"npm.autoDetect": "off"
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"ms-dotnettools.csharp",
+			"vadimcn.vscode-lldb",
+			"ms-vscode.mono-debug",
+			"dfarley1.file-picker"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "AI_Project Linux Debug Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Debug Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project Linux Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Debug Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux DebugGame Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project Linux DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux DebugGame Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Development Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Development Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project Linux Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Development Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Test Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Test",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Test Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Test",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project Linux Test Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Test Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Test",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Shipping Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Shipping",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Shipping Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Shipping",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project Linux Shipping Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project Linux Shipping Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"Linux",
+					"Shipping",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Debug Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Debug Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project LinuxArm64 Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Debug Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 DebugGame Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project LinuxArm64 DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 DebugGame Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Development Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Development Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project LinuxArm64 Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Development Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Test Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Test",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Test Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Test",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project LinuxArm64 Test Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Test Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Test",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Shipping Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Shipping",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Shipping Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Shipping",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_Project LinuxArm64 Shipping Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_Project LinuxArm64 Shipping Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_Project",
+					"LinuxArm64",
+					"Shipping",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux Debug Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux Debug Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_ProjectEditor Linux Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux Debug Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"Debug",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux DebugGame Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_ProjectEditor Linux DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux DebugGame Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"DebugGame",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux Development Build",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux Development Rebuild",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"AI_ProjectEditor Linux Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			},
+			{
+				"label": "AI_ProjectEditor Linux Development Clean",
+				"group": "build",
+				"command": "Engine/Build/BatchFiles/Linux/Build.sh",
+				"args": [
+					"AI_ProjectEditor",
+					"Linux",
+					"Development",
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-waitmutex",
+					"-clean"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+				}
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Launch AI_Project (Debug)",
+				"request": "launch",
+				"program": "/home/sihnor/dev/UnrealProjects/AI_Project/Binaries/Linux/AI_Project-Linux-Debug",
+				"preLaunchTask": "AI_Project Linux Debug Build",
+				"args": [
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_Project (DebugGame)",
+				"request": "launch",
+				"program": "/home/sihnor/dev/UnrealProjects/AI_Project/Binaries/Linux/AI_Project-Linux-DebugGame",
+				"preLaunchTask": "AI_Project Linux DebugGame Build",
+				"args": [
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_Project (Development)",
+				"request": "launch",
+				"program": "/home/sihnor/dev/UnrealProjects/AI_Project/Binaries/Linux/AI_Project",
+				"preLaunchTask": "AI_Project Linux Development Build",
+				"args": [
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_Project (Test)",
+				"request": "launch",
+				"program": "/home/sihnor/dev/UnrealProjects/AI_Project/Binaries/Linux/AI_Project-Linux-Test",
+				"preLaunchTask": "AI_Project Linux Test Build",
+				"args": [
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_Project (Shipping)",
+				"request": "launch",
+				"program": "/home/sihnor/dev/UnrealProjects/AI_Project/Binaries/Linux/AI_Project-Linux-Shipping",
+				"preLaunchTask": "AI_Project Linux Shipping Build",
+				"args": [
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_ProjectEditor (Debug)",
+				"request": "launch",
+				"program": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Binaries/Linux/UnrealEditor-Linux-Debug",
+				"preLaunchTask": "AI_ProjectEditor Linux Debug Build",
+				"args": [
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject"
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_ProjectEditor (DebugGame)",
+				"request": "launch",
+				"program": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Binaries/Linux/UnrealEditor-Linux-DebugGame",
+				"preLaunchTask": "AI_ProjectEditor Linux DebugGame Build",
+				"args": [
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject"
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Launch AI_ProjectEditor (Development)",
+				"request": "launch",
+				"program": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Binaries/Linux/UnrealEditor",
+				"preLaunchTask": "AI_ProjectEditor Linux Development Build",
+				"args": [
+					"/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject"
+				],
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2",
+				"type": "cppdbg",
+				"visualizerFile": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+				"showDisplayString": true
+			},
+			{
+				"name": "Generate Project Files",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "UnrealBuildTool Linux Development Build",
+				"program": "/opt/UnrealEngine/UnrealEngine_5.3.2/Engine/Build/BatchFiles/RunUBT.bat",
+				"args": [
+					"-projectfiles",
+					"-vscode",
+					"-project=/home/sihnor/dev/UnrealProjects/AI_Project/AI_Project.uproject",
+					"-game",
+					"-engine",
+					"-dotnet"
+				],
+				"console": "internalConsole",
+				"internalConsoleOptions": "openOnSessionStart",
+				"stopAtEntry": false,
+				"cwd": "/opt/UnrealEngine/UnrealEngine_5.3.2"
+			}
+		]
+	}
+}

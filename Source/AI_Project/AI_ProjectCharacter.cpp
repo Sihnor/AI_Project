@@ -13,6 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "Actors/Stone.h"
 #include "Actors/Tree.h"
+#include "AI/Project_DA_GameEvent.h"
 
 #define ECC_Resource		ECC_GameTraceChannel1
 #define ECC_NPC				ECC_GameTraceChannel2
@@ -138,6 +139,8 @@ void AAI_ProjectCharacter::CommandNPC(const FInputActionValue& Value)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));
 	}
+
+	this->GameEvents->OnCommandResource.Broadcast(hitResultsInSphere);
 }
 
 bool AAI_ProjectCharacter::GetAllResourcesInBox(TArray<FHitResult>& result)
@@ -219,7 +222,8 @@ void AAI_ProjectCharacter::SummonNPC(const FInputActionValue& Value)
 
 	DrawDebugSphere(GetWorld(), start, sphereCollision.GetSphereRadius(), 10, FColor::Cyan, false, 1.0f);
 	GetWorld()->SweepMultiByChannel(hitResults, start, start, FQuat::Identity, ECC_NPC, sphereCollision);
-	
+
+	this->GameEvents->OnCommandSummon.Broadcast(hitResults);
 	//for (FHitResult HitResult : hitResults)
 	//{
 	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit: %s"), *(HitResult.GetActor()->GetName())));

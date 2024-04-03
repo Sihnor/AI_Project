@@ -33,9 +33,11 @@ public:
 		this->NPCState = ENPCState::Following;
 	}
 
-	virtual void Summon() = 0;
+	UFUNCTION(Category = "AI")
+	virtual void Summon(TArray<FHitResult> targets) = 0;
 
-	virtual void Command() = 0;
+	UFUNCTION(Category = "AI")
+	virtual void Command(TArray<FHitResult> resource) = 0;
 
 	ENPCState IsCollected() const { return this->NPCState; }
 };

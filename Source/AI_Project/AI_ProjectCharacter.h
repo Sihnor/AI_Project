@@ -54,6 +54,9 @@ class AAI_ProjectCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	int SphereRadius = 500;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UProject_DA_GameEvent> GameEvents;
+
 public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC")
