@@ -5,7 +5,7 @@
 UENUM(BlueprintType)
 enum class ENPCState : uint8
 {
-	Collecting,
+	Commanded,
 	Following,
 	Masterless,
 	None

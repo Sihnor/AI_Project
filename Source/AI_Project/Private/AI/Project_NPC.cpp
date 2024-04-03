@@ -56,12 +56,17 @@ void AProject_NPC::Summon(TArray<FHitResult> npcs)
 		if (result.GetActor() != this) continue;
 		
 		this->NPCState = ENPCState::Following;
+		this->ListAI->AddFollowingAI(this);
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Summoned"));
 	}
 }
 
 void AProject_NPC::Command(TArray<FHitResult> resources)
 {
+	if (this->NPCState != ENPCState::Following) return;
+
+	this->NPCState = ENPCState::Commanded;
+	this->ListAI->AddCommandedAI(this);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Commanded"));
 }
 
