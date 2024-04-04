@@ -38,9 +38,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* SphereComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	UBehaviorTree* BehaviorTree;
-
 	UFUNCTION(BlueprintCallable, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
@@ -58,8 +55,4 @@ protected:
 	// Get ListAi
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	UProject_DataAsset_ListAI* GetListAI() const { return this->ListAI.Get(); }
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	UBehaviorTree* GetBehaviorTree() const { return this->BehaviorTree; }
 };

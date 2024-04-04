@@ -5,23 +5,32 @@
 
 #include "AI/Project_NPC.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AProject_NPC_AIController::AProject_NPC_AIController(FObjectInitializer const& ObjectInitializer)
 {
+	this->BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
+	this->BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
 }
- 
+
+void AProject_NPC_AIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (this->BehaviorTree)
+	{
+		this->RunBehaviorTree(this->BehaviorTree);
+		this->BehaviorTreeComponent->StartTree(*this->BehaviorTree);
+	}
+}
+
+
 void AProject_NPC_AIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (AProject_NPC* const npc = Cast<AProject_NPC>(InPawn))
+	if (IsValid(this->Blackboard.Get()) && IsValid(this->BehaviorTree.Get()))
 	{
-		if (UBehaviorTree* const behaviorTree = npc->GetBehaviorTree())
-		{
-			UBlackboardComponent* blackboardComponent = nullptr;
-			UseBlackboard(behaviorTree->BlackboardAsset, blackboardComponent);
-			Blackboard = blackboardComponent;
-			RunBehaviorTree(behaviorTree);
-		}
+		this->Blackboard->InitializeBlackboard(*this->BehaviorTree->BlackboardAsset);
 	}
 }
