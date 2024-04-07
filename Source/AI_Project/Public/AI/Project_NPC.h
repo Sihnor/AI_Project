@@ -10,16 +10,9 @@
 class UBehaviorTree;
 
 UCLASS()
-class AI_PROJECT_API AProject_NPC : public ACharacter, public IAI_Package
+class AI_PROJECT_API AProject_NPC : public ACharacter
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameEvents")
-	TObjectPtr<class UProject_DA_GameEvent> CommandEvent;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameEvents")
-	TObjectPtr<class UProject_DA_GameEvent> SummonEvent;	
 
 public:
 	// Sets default values for this character's properties
@@ -41,18 +34,4 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	// Implement IAI_Package interface
-	UFUNCTION()
-	virtual void Collect() override;
-	UFUNCTION()
-	virtual void Summon(TArray<FHitResult> npcs) override;
-	UFUNCTION()
-	virtual void Command(TArray<FHitResult> resources) override;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
-	TObjectPtr<class UProject_DataAsset_ListAI> ListAI;
-
-	// Get ListAi
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	UProject_DataAsset_ListAI* GetListAI() const { return this->ListAI.Get(); }
 };

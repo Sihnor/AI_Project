@@ -14,6 +14,8 @@
 #include "Actors/Stone.h"
 #include "Actors/Tree.h"
 #include "AI/Project_DA_GameEvent.h"
+#include "AI/Project_DA_GameEvent_Vector.h"
+#include "Components/SphereComponent.h"
 
 #define ECC_Resource		ECC_GameTraceChannel1
 #define ECC_NPC				ECC_GameTraceChannel2
@@ -52,6 +54,13 @@ AAI_ProjectCharacter::AAI_ProjectCharacter()
 	this->FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	this->FollowCamera->bUsePawnControlRotation = false;
 	this->FollowCamera->SetRelativeRotation(FRotator(0.f, 320.f, 0.f));
+
+	this->FollowPointSphere = CreateDefaultSubobject<USphereComponent>(TEXT("FollowPointSphere"));
+	this->FollowPointSphere->SetupAttachment(RootComponent);
+	this->FollowPointSphere->SetSphereRadius(100.0f);
+	this->FollowPointSphere->SetCollisionProfileName(TEXT("NoCollision"));
+	this->FollowPointSphere->SetRelativeLocation(FVector(-300.0f, 0.0f, 0.0f));
+	
 }
 
 void AAI_ProjectCharacter::BeginPlay()
@@ -67,6 +76,8 @@ void AAI_ProjectCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	
+	this->SetFollowPointLocation(this->FollowPointLocation);
 }
 
 
@@ -96,6 +107,8 @@ void AAI_ProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void AAI_ProjectCharacter::Move(const FInputActionValue& Value)
 {
 	if (Controller == nullptr) return;
+
+	this->FollowPoint();
 
 	// input is a Vector2D
 	const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -203,6 +216,30 @@ TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(FHitResult 
 	}
 
 	return sameResourceTypeInSphere;
+}
+
+void AAI_ProjectCharacter::FollowPoint()
+{
+	bool isNearby = this->FollowPointSphere->GetRelativeLocation().Length() < 500.0f;
+
+	if (isNearby)
+	{
+		this->FollowPointSphere->SetWorldLocation(this->FollowPointLocation);
+		return;
+	}
+
+	const FVector vectorBetweenMeshAndSphere = (this->GetMesh()->GetComponentLocation() - this->FollowPointSphere->GetComponentLocation()) * 0.1f;
+	const FVector vectorInWorld = (this->FollowPointSphere->GetComponentLocation() + vectorBetweenMeshAndSphere) + FVector(0.0f, 0.0f, 10.0f);
+
+	this->SetFollowPointLocation(vectorInWorld);
+}
+
+void AAI_ProjectCharacter::SetFollowPointLocation(const FVector& location)
+{
+	this->FollowPointLocation = location;
+	this->FollowPointSphere->SetWorldLocation(this->FollowPointLocation);
+	
+	if (this->FollowEvent) this->FollowEvent->OnEvent.Broadcast(this->FollowPointLocation);
 }
 
 void AAI_ProjectCharacter::SummonNPC(const FInputActionValue& Value) 

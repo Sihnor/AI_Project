@@ -6,7 +6,6 @@
 #include "Engine/DataAsset.h"
 #include "Project_DataAsset_ListAI.generated.h"
 
-class AProject_NPC;
 /**
  * 
  */
@@ -19,24 +18,25 @@ public:
 	UProject_DataAsset_ListAI();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	TArray<AProject_NPC*> ListOfAllNPCs;
+	TArray<class AProject_NPC_AIController*> ListOfAllNPCs;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	TArray<AProject_NPC*> ListOfAllFollowingNPCs;
+	TArray<AProject_NPC_AIController*> ListOfAllFollowingNPCs;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	TArray<AProject_NPC*> ListOfAllCommandedNPCs;
+	TArray<AProject_NPC_AIController*> ListOfAllCommandedNPCs;
+	
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void RegisterAI(AProject_NPC* AI);
+	void RegisterAI(AProject_NPC_AIController* AI);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void AddFollowingAI(AProject_NPC* AI);
+	void AddFollowingAI(AProject_NPC_AIController* AI);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void AddCommandedAI(AProject_NPC* AI);
+	void AddCommandedAI(AProject_NPC_AIController* AI);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void RemoveAI(AProject_NPC* AI);
+	void RemoveAI(AProject_NPC_AIController* AI);
 	
 };

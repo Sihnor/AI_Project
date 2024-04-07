@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "AI_ProjectCharacter.generated.h"
 
+class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -20,7 +21,7 @@ class AAI_ProjectCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-#pragma region Properties
+#pragma region PropertiesComponents
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
@@ -28,7 +29,13 @@ class AAI_ProjectCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
+	USphereComponent* FollowPointSphere;
+
+#pragma endregion
+
+#pragma region PropertiesInput
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -51,27 +58,31 @@ class AAI_ProjectCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SummonNPCAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
-	int ResourceSphereRadius = 500;
+#pragma endregion
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
-	float SummonSphereRadius = 1000.0f;
-
+#pragma region PropertiesGameEvents
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UProject_DA_GameEvent> CommandEvent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UProject_DA_GameEvent> SummonEvent;
 
-public:
-	
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UProject_DA_GameEvent_Vector> FollowEvent;
 
 #pragma endregion
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
+	int ResourceSphereRadius = 500;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCs", meta = (AllowPrivateAccess = "true"))
+	float SummonSphereRadius = 1000.0f;
+	
+	FVector FollowPointLocation;
+	
 public:
 	AAI_ProjectCharacter();
-	
 
 protected:
 
@@ -103,5 +114,10 @@ private:
 	bool GetAllResourcesInBox(TArray<FHitResult>& result) const;
 	bool GetClosestResource(FHitResult& results) const;
 	TArray<FHitResult> GetSameResourceTypeInSphere(FHitResult closestResource) const;
+
+	void FollowPoint();
+	void SetFollowPointLocation(const FVector& location);
+	
+	
 };
 

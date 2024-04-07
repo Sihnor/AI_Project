@@ -7,7 +7,8 @@ UProject_DataAsset_ListAI::UProject_DataAsset_ListAI()
 {
 }
 
-void UProject_DataAsset_ListAI::RegisterAI(AProject_NPC* AI)
+
+void UProject_DataAsset_ListAI::RegisterAI(AProject_NPC_AIController* AI)
 {
 	if (this->ListOfAllNPCs.Contains(AI)) return;
 
@@ -15,7 +16,7 @@ void UProject_DataAsset_ListAI::RegisterAI(AProject_NPC* AI)
 	this->AddFollowingAI(AI);
 }
 
-void UProject_DataAsset_ListAI::AddFollowingAI(AProject_NPC* AI)
+void UProject_DataAsset_ListAI::AddFollowingAI(AProject_NPC_AIController* AI)
 {
 	// Is this AI already in the list of following NPCs?
 	if (this->ListOfAllFollowingNPCs.Contains(AI)) return;
@@ -25,7 +26,7 @@ void UProject_DataAsset_ListAI::AddFollowingAI(AProject_NPC* AI)
 	this->ListOfAllFollowingNPCs.Add(AI);
 }
 
-void UProject_DataAsset_ListAI::AddCommandedAI(AProject_NPC* AI)
+void UProject_DataAsset_ListAI::AddCommandedAI(AProject_NPC_AIController* AI)
 {
 	// Is this AI already in the list of commanded NPCs?
 	if (this->ListOfAllCommandedNPCs.Contains(AI)) return;
@@ -35,7 +36,7 @@ void UProject_DataAsset_ListAI::AddCommandedAI(AProject_NPC* AI)
 	this->ListOfAllCommandedNPCs.Add(AI);
 }
 
-void UProject_DataAsset_ListAI::RemoveAI(AProject_NPC* AI)
+void UProject_DataAsset_ListAI::RemoveAI(AProject_NPC_AIController* AI)
 {
 	if (!this->ListOfAllNPCs.Contains(AI)) return;
 

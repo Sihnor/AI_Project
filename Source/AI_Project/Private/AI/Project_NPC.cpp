@@ -5,6 +5,7 @@
 
 #include "AI/Project_DataAsset_ListAI.h"
 #include "AI/Project_DA_GameEvent.h"
+#include "AI/Project_NPC_AIController.h"
 #include "Components/SphereComponent.h"
 
 
@@ -40,45 +41,14 @@ void AProject_NPC::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AProject_NPC::Collect()
-{
-	IAI_Package::Collect();
-
-	if (this->ListAI) this->ListAI->RegisterAI(this);
-}
-
-void AProject_NPC::Summon(TArray<FHitResult> npcs)
-{
-	if (this->NPCState == ENPCState::Masterless) return;
-
-	for (FHitResult result : npcs)
-	{
-		if (result.GetActor() != this) continue;
-		
-		this->NPCState = ENPCState::Following;
-		this->ListAI->AddFollowingAI(this);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Summoned"));
-	}
-}
-
-void AProject_NPC::Command(TArray<FHitResult> resources)
-{
-	if (this->NPCState != ENPCState::Following) return;
-
-	this->NPCState = ENPCState::Commanded;
-	this->ListAI->AddCommandedAI(this);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Commanded"));
-}
-
 void AProject_NPC::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(OtherActor->GetOwner()))
-	{
-		if (this->IsCollected() != ENPCState::Masterless) return;
-		
-		if (this->CommandEvent) this->CommandEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC::Command);
-		if (this->SummonEvent) this->SummonEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC::Summon);
+	if (!(Cast<APlayerController>(OtherActor->GetOwner()))) return;
 
-		this->Collect();
-	}
+	if (AProject_NPC_AIController* controller = Cast<AProject_NPC_AIController>(this->GetController()))
+	{
+		if (controller->IsCollected() != ENPCState::Masterless) return;
+
+		controller->Collect();
+	}	
 }
