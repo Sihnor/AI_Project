@@ -5,42 +5,10 @@
 
 #include "AI/Project_DataAsset_ListAI.h"
 #include "AI/Project_DA_GameEvent.h"
+#include "AI/Project_DA_GameEvent_Vector.h"
 #include "AI/Project_NPC.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
-void AProject_NPC_AIController::Collect()
-{
-	IAI_Package::Collect();
-	
-	if (this->CommandEvent) this->CommandEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Command);
-	if (this->SummonEvent) this->SummonEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Summon);
-
-	if (this->ListAI) this->ListAI->RegisterAI(this);
-}
-
-void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
-{
-	if (this->NPCState == ENPCState::Masterless) return;
-
-	for (FHitResult result : npcs)
-	{
-		if (result.GetActor()->GetInstigatorController() != this) continue;
-		
-		this->NPCState = ENPCState::Following;
-		this->ListAI->AddFollowingAI(this);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Summoned"));
-	}
-}
-
-void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
-{
-	if (this->NPCState != ENPCState::Following) return;
-
-	this->NPCState = ENPCState::Commanded;
-	this->ListAI->AddCommandedAI(this);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Commanded"));
-}
 
 AProject_NPC_AIController::AProject_NPC_AIController(FObjectInitializer const& ObjectInitializer)
 {
@@ -57,6 +25,9 @@ void AProject_NPC_AIController::BeginPlay()
 		this->RunBehaviorTree(this->BehaviorTree);
 		this->BehaviorTreeComponent->StartTree(*this->BehaviorTree);
 	}
+
+	this->NPCState = ENPCState::Masterless;
+	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
 }
 
 
@@ -69,3 +40,46 @@ void AProject_NPC_AIController::OnPossess(APawn* InPawn)
 		this->Blackboard->InitializeBlackboard(*this->BehaviorTree->BlackboardAsset);
 	}
 }
+
+void AProject_NPC_AIController::Collect()
+{
+	IAI_Package::Collect();
+	
+	if (this->CommandEvent) this->CommandEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Command);
+	if (this->SummonEvent) this->SummonEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Summon);
+	if (this->FollowEvent) this->FollowEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Follow);
+
+	if (this->ListAI) this->ListAI->RegisterAI(this);
+	
+	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
+}
+
+void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
+{
+	if (this->NPCState == ENPCState::Masterless) return;
+
+	for (FHitResult result : npcs)
+	{
+		if (result.GetActor()->GetInstigatorController() != this) continue;
+		
+		this->NPCState = ENPCState::Following;
+		this->ListAI->AddFollowingAI(this);
+
+		if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
+	}
+}
+
+void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
+{
+	if (this->NPCState != ENPCState::Following) return;
+
+	this->NPCState = ENPCState::Commanded;
+	this->ListAI->AddCommandedAI(this);
+	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
+}
+
+void AProject_NPC_AIController::Follow(FVector location)
+{
+	if (this->BlackboardComponent) BlackboardComponent->SetValueAsVector(TEXT("FollowPoint"), location);
+}
+

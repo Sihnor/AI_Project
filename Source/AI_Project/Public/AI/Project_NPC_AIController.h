@@ -24,6 +24,9 @@ public:
 	UFUNCTION()
 	virtual void Command(TArray<FHitResult> resources) override;
 
+	UFUNCTION()
+	void Follow(FVector location);
+	
 	// Get ListAi
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	UProject_DataAsset_ListAI* GetListAI() const { return this->ListAI.Get(); }
@@ -56,5 +59,8 @@ public:
 	virtual void BeginPlay() override;
 	
 	virtual void OnPossess(APawn* InPawn) override;
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	ENPCState GetNPCState() const { return this->NPCState; }
 	
 };

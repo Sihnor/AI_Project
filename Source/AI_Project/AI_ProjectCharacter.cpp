@@ -59,7 +59,7 @@ AAI_ProjectCharacter::AAI_ProjectCharacter()
 	this->FollowPointSphere->SetupAttachment(RootComponent);
 	this->FollowPointSphere->SetSphereRadius(100.0f);
 	this->FollowPointSphere->SetCollisionProfileName(TEXT("NoCollision"));
-	this->FollowPointSphere->SetRelativeLocation(FVector(-300.0f, 0.0f, 0.0f));
+	this->FollowPointSphere->SetRelativeLocation(FVector(-200.0f, 0.0f, 0.0f));
 	
 }
 
@@ -220,7 +220,7 @@ TArray<FHitResult> AAI_ProjectCharacter::GetSameResourceTypeInSphere(FHitResult 
 
 void AAI_ProjectCharacter::FollowPoint()
 {
-	bool isNearby = this->FollowPointSphere->GetRelativeLocation().Length() < 500.0f;
+	bool isNearby = this->FollowPointSphere->GetRelativeLocation().Length() < 300.0f;
 
 	if (isNearby)
 	{
