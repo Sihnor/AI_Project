@@ -7,6 +7,8 @@
 #include "AIController.h"
 #include "Project_NPC_AIController.generated.h"
 
+class UProject_DataAsset_ListAI;
+class AResource;
 /**
  * 
  */
@@ -14,6 +16,9 @@ UCLASS()
 class AI_PROJECT_API AProject_NPC_AIController : public AAIController, public IAI_Package
 {
 	GENERATED_BODY()
+
+public:
+	AProject_NPC_AIController(FObjectInitializer const& ObjectInitializer);
 
 public:
 	// Implement IAI_Package interface
@@ -41,6 +46,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<class UProject_DataAsset_ListAI> ListAI;
 
+	UPROPERTY()
+	TArray<AResource*> ResourcesList;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|GameEvents")
 	TObjectPtr<class UProject_DA_GameEvent_Vector> FollowEvent;
 
@@ -54,7 +62,7 @@ public:
 	TObjectPtr<class UBlackboardComponent> BlackboardComponent;
 
 public:
-	AProject_NPC_AIController(FObjectInitializer const& ObjectInitializer);
+	
 
 	virtual void BeginPlay() override;
 	
@@ -62,5 +70,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	ENPCState GetNPCState() const { return this->NPCState; }
+
+	FVector GetNextResourcePosition();
+	
+
+private:
+	int ResourceIndex = -1;
 	
 };

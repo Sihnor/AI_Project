@@ -3,6 +3,7 @@
 
 #include "AI/Project_NPC_AIController.h"
 
+#include "Actors/Resource.h"
 #include "AI/Project_DataAsset_ListAI.h"
 #include "AI/Project_DA_GameEvent.h"
 #include "AI/Project_DA_GameEvent_Vector.h"
@@ -73,6 +74,13 @@ void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
 {
 	if (this->NPCState != ENPCState::Following) return;
 
+	this->ResourcesList.Empty();
+	
+	for (FHitResult Element : resources)
+	{
+		this->ResourcesList.Add(Cast<AResource>(Element.GetActor()));
+	}
+
 	this->NPCState = ENPCState::Commanded;
 	this->ListAI->AddCommandedAI(this);
 	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
@@ -81,5 +89,12 @@ void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
 void AProject_NPC_AIController::Follow(FVector location)
 {
 	if (this->BlackboardComponent) BlackboardComponent->SetValueAsVector(TEXT("FollowPoint"), location);
+}
+
+FVector AProject_NPC_AIController::GetNextResourcePosition()
+{
+	this->ResourceIndex++;
+
+	return this->ResourcesList[this->ResourceIndex]->GetActorLocation();
 }
 
