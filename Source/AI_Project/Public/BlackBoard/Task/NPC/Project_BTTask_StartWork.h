@@ -13,4 +13,6 @@ UCLASS()
 class AI_PROJECT_API UProject_BTTask_StartWork : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
+public:
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

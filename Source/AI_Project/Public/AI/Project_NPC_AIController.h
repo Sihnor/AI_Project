@@ -71,7 +71,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	ENPCState GetNPCState() const { return this->NPCState; }
 
-	FVector GetNextResourcePosition();
+	bool RegisterResource();
+	bool CanGetNextResourcePosition(FVector& location);
 	
 
 private:

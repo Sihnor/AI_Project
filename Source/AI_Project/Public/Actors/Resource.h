@@ -18,10 +18,16 @@ class AI_PROJECT_API AResource : public AActor
 protected:
 	UPROPERTY(EditAnywhere, Category = "Resource")
 	USceneComponent* Root;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Resource")
 	UStaticMeshComponent* Mesh;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Resource")
+	int QuantityOfWorker = 3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Resource")
+	int QuantityOfWorkerRemaining;
+
 public:
 	// Sets default values for this actor's properties
 	AResource();
@@ -33,4 +39,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	virtual bool RegisterWorker();
 };

@@ -91,10 +91,19 @@ void AProject_NPC_AIController::Follow(FVector location)
 	if (this->BlackboardComponent) BlackboardComponent->SetValueAsVector(TEXT("FollowPoint"), location);
 }
 
-FVector AProject_NPC_AIController::GetNextResourcePosition()
+bool AProject_NPC_AIController::RegisterResource()
+{
+	return this->ResourcesList[this->ResourceIndex]->RegisterWorker();
+}
+
+bool AProject_NPC_AIController::CanGetNextResourcePosition(FVector& location)
 {
 	this->ResourceIndex++;
 
-	return this->ResourcesList[this->ResourceIndex]->GetActorLocation();
+	if (this->ResourceIndex >= this->ResourcesList.Num()) return false;
+
+	location = this->ResourcesList[this->ResourceIndex]->GetActorLocation();
+	
+	return true;
 }
 

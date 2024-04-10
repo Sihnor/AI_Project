@@ -3,8 +3,14 @@
 
 #include "BlackBoard/Task/NPC/Project_BTTask_CheckRemainingSpace.h"
 
+#include "AI/Project_NPC_AIController.h"
+
 EBTNodeResult::Type UProject_BTTask_CheckRemainingSpace::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	AProject_NPC_AIController* const Controller = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner());
+
+	const bool HasSpace = Controller->RegisterResource();
+
+	return (HasSpace) ?  EBTNodeResult::Succeeded :  EBTNodeResult::Failed;
 	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
 }

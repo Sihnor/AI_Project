@@ -12,7 +12,7 @@ AResource::AResource()
 
 	this->Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = this->Root;
-	
+
 	this->Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	this->Mesh->SetupAttachment(this->Root);
 }
@@ -21,7 +21,8 @@ AResource::AResource()
 void AResource::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	this->QuantityOfWorkerRemaining = this->QuantityOfWorker;
 }
 
 // Called every frame
@@ -30,3 +31,13 @@ void AResource::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool AResource::RegisterWorker()
+{
+	if (this->QuantityOfWorkerRemaining > 0)
+	{
+		this->QuantityOfWorkerRemaining--;
+		return true;
+	}
+
+	return false;
+}
