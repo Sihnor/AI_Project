@@ -5,18 +5,18 @@
 
 #include "Navigation/PathFollowingComponent.h"
 #include "AI/Project_NPC_AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 EBTNodeResult::Type UProject_BTTask_GoToResource::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	bNotifyTick = true;
 	
 	AProject_NPC_AIController* AIController = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner());
+	UBlackboardComponent* const Blackboard = OwnerComp.GetBlackboardComponent();
+
+	const FVector ResourcePosition = Blackboard->GetValueAsVector(TEXT("ResourcePosition"));
 	
-	FVector ResourcePosition;
-	AIController->CanGetNextResourcePosition(ResourcePosition);
-	
-	AIController->MoveToLocation(ResourcePosition);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Moving to resource"));
+	AIController->MoveToLocation(ResourcePosition, 1);
 
 	return EBTNodeResult::InProgress;
 }

@@ -10,7 +10,7 @@ EBTNodeResult::Type UProject_BTTask_FindNextResource::ExecuteTask(UBehaviorTreeC
 {
 	FVector ResourcePosition;
 
-	const bool IsThereANextResource = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->CanGetNextResourcePosition(ResourcePosition);
+	bool IsThereANextResource = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->CanGetNextResourcePosition(ResourcePosition);
 
 	if (!IsThereANextResource) return EBTNodeResult::Failed;
 

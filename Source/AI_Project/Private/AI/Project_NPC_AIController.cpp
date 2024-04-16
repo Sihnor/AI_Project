@@ -66,6 +66,8 @@ void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
 		this->NPCState = ENPCState::Following;
 		this->ListAI->AddFollowingAI(this);
 
+		this->StopWork();
+
 		if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
 	}
 }
@@ -82,6 +84,7 @@ void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
 	}
 
 	this->NPCState = ENPCState::Commanded;
+	this->ResourceIndex = 0;
 	this->ListAI->AddCommandedAI(this);
 	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
 }
@@ -93,17 +96,29 @@ void AProject_NPC_AIController::Follow(FVector location)
 
 bool AProject_NPC_AIController::RegisterResource()
 {
-	return this->ResourcesList[this->ResourceIndex]->RegisterWorker();
+	return this->ResourcesList[this->ResourceIndex - 1]->RegisterWorker();
 }
 
 bool AProject_NPC_AIController::CanGetNextResourcePosition(FVector& location)
 {
-	this->ResourceIndex++;
-
-	if (this->ResourceIndex >= this->ResourcesList.Num()) return false;
+	if (this->ResourceIndex > this->ResourcesList.Num()) return false;
 
 	location = this->ResourcesList[this->ResourceIndex]->GetActorLocation();
+
+	this->ResourceIndex++;
 	
 	return true;
 }
 
+void AProject_NPC_AIController::FaceResource()
+{
+	APawn* const ControlledPawn = GetPawn();
+
+	if (!ControlledPawn) return;
+
+	FVector Direction = this->ResourcesList[this->ResourceIndex - 1]->GetActorLocation() - ControlledPawn->GetActorLocation();
+	Direction.Z = 0;
+
+	FRotator const Rotator = FRotationMatrix::MakeFromX(Direction).Rotator();
+	ControlledPawn->SetActorRotation(Rotator);
+}

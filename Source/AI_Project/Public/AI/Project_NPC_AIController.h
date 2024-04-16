@@ -61,6 +61,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBlackboardComponent> BlackboardComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	bool bIsWorking = false;
+
 public:
 	
 
@@ -73,9 +76,16 @@ public:
 
 	bool RegisterResource();
 	bool CanGetNextResourcePosition(FVector& location);
+
+	void StartWork() { this->bIsWorking = true; }
+	void StopWork() { this->bIsWorking = false; }
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	bool GetIsWorking() const { return this->bIsWorking; }
+
+	void FaceResource();
 	
 
 private:
-	int ResourceIndex = -1;
+	int ResourceIndex = 0;
 	
 };

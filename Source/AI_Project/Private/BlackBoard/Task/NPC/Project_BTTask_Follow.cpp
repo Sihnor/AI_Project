@@ -14,29 +14,37 @@ UProject_BTTask_Follow::UProject_BTTask_Follow(FObjectInitializer const& ObjectI
 
 EBTNodeResult::Type UProject_BTTask_Follow::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-
-
-	return EBTNodeResult::Failed;
-	UBlackboardComponent* const blackboard = OwnerComp.GetBlackboardComponent();
-
-	//if (!blackboard) return EBTNodeResult::Failed;
-
-	//blackboard->SetValueAsVector(TEXT("FollowPoint"), FVector(0.f, 0.f, 0.f));
+	bNotifyTick = true;
 	
-
+	AProject_NPC_AIController* AIController = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner());
 	
 	
-	if (AProject_NPC_AIController* const controller = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner()))
+	UBlackboardComponent* const Blackboard = OwnerComp.GetBlackboardComponent();
+	if (!Blackboard) return EBTNodeResult::Failed;
+
+	FVector FollowPoint = Blackboard->GetValueAsVector(TEXT("FollowPoint"));
+	
+
+	return EBTNodeResult::InProgress;
+}
+
+void UProject_BTTask_Follow::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+
+	
+	if (AProject_NPC_AIController* AIController = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner()))
 	{
-		if (APawn* const npc = controller->GetPawn())
+		if (AIController->GetNPCState() == ENPCState::Commanded)
 		{
-
-			if (UNavigationSystemV1* const nacSys = UNavigationSystemV1::GetCurrent((GetWorld())))
-			{
-				//OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), )
-			}
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		}
 	}
+
+	UBlackboardComponent* const Blackboard = OwnerComp.GetBlackboardComponent();
+
+	FVector FollowPoint = Blackboard->GetValueAsVector(TEXT("FollowPoint"));
 	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	AProject_NPC_AIController* AIController = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner());
+	AIController->MoveToLocation(FollowPoint);
 }
