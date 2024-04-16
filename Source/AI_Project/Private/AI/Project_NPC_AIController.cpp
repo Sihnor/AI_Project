@@ -58,6 +58,7 @@ void AProject_NPC_AIController::Collect()
 void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
 {
 	if (this->NPCState == ENPCState::Masterless) return;
+	this->ResourceIndex = 0;
 
 	for (FHitResult result : npcs)
 	{
@@ -101,7 +102,8 @@ bool AProject_NPC_AIController::RegisterResource()
 
 bool AProject_NPC_AIController::CanGetNextResourcePosition(FVector& location)
 {
-	if (this->ResourceIndex > this->ResourcesList.Num()) return false;
+	if (this->ResourceIndex > this->ResourcesList.Num() -1) return false;
+	UE_LOG(LogTemp, Warning, TEXT("ResourceIndex: %d"), this->ResourcesList.Num());
 
 	location = this->ResourcesList[this->ResourceIndex]->GetActorLocation();
 
