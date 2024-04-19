@@ -28,6 +28,8 @@ public:
 	virtual void Summon(TArray<FHitResult> npcs) override;
 	UFUNCTION()
 	virtual void Command(TArray<FHitResult> resources) override;
+	UFUNCTION()
+	virtual void StartFollowing() override;
 
 	UFUNCTION()
 	void Follow(FVector location);
@@ -65,8 +67,6 @@ public:
 	bool bIsWorking = false;
 
 public:
-	
-
 	virtual void BeginPlay() override;
 	
 	virtual void OnPossess(APawn* InPawn) override;
@@ -75,7 +75,9 @@ public:
 	ENPCState GetNPCState() const { return this->NPCState; }
 
 	bool RegisterResource();
-	bool CanGetNextResourcePosition(FVector& location);
+	void UnRegisterResource();
+	bool IsThereARemainingResource() const;
+	void GetNextResourcePosition(FVector& location);
 
 	void StartWork() { this->bIsWorking = true; }
 	void StopWork() { this->bIsWorking = false; }

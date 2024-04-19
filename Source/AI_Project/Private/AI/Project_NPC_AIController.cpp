@@ -58,18 +58,13 @@ void AProject_NPC_AIController::Collect()
 void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
 {
 	if (this->NPCState == ENPCState::Masterless) return;
-	this->ResourceIndex = 0;
+	
 
 	for (FHitResult result : npcs)
 	{
 		if (result.GetActor()->GetInstigatorController() != this) continue;
-		
-		this->NPCState = ENPCState::Following;
-		this->ListAI->AddFollowingAI(this);
 
-		this->StopWork();
-
-		if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
+		StartFollowing();
 	}
 }
 
@@ -90,6 +85,19 @@ void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
 	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
 }
 
+void AProject_NPC_AIController::StartFollowing()
+{
+	this->UnRegisterResource();
+	this->StopWork();
+	this->ResourcesList.Empty();
+
+	this->ResourceIndex = 0;
+	this->NPCState = ENPCState::Following;
+	this->ListAI->AddFollowingAI(this);
+
+	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
+}
+
 void AProject_NPC_AIController::Follow(FVector location)
 {
 	if (this->BlackboardComponent) BlackboardComponent->SetValueAsVector(TEXT("FollowPoint"), location);
@@ -100,16 +108,23 @@ bool AProject_NPC_AIController::RegisterResource()
 	return this->ResourcesList[this->ResourceIndex - 1]->RegisterWorker();
 }
 
-bool AProject_NPC_AIController::CanGetNextResourcePosition(FVector& location)
+void AProject_NPC_AIController::UnRegisterResource()
 {
-	if (this->ResourceIndex > this->ResourcesList.Num() -1) return false;
-	UE_LOG(LogTemp, Warning, TEXT("ResourceIndex: %d"), this->ResourcesList.Num());
+	if (this->ResourcesList.Num() == 0) return;
+	
+	this->ResourcesList[this->ResourceIndex - 1]->UnregisterWorker();
+}
 
+bool AProject_NPC_AIController::IsThereARemainingResource() const
+{
+	return (this->ResourceIndex < this->ResourcesList.Num());
+}
+
+void AProject_NPC_AIController::GetNextResourcePosition(FVector& location)
+{
 	location = this->ResourcesList[this->ResourceIndex]->GetActorLocation();
 
 	this->ResourceIndex++;
-	
-	return true;
 }
 
 void AProject_NPC_AIController::FaceResource()

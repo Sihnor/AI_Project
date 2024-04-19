@@ -41,3 +41,13 @@ bool AResource::RegisterWorker()
 
 	return false;
 }
+
+void AResource::UnregisterWorker()
+{
+	this->QuantityOfWorkerRemaining++;
+
+	if(this->QuantityOfWorkerRemaining >= this->QuantityOfWorker)
+	{
+		this->QuantityOfWorkerRemaining = this->QuantityOfWorker;
+	}
+}

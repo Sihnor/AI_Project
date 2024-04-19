@@ -39,5 +39,8 @@ public:
 	UFUNCTION(Category = "AI")
 	virtual void Command(TArray<FHitResult> resource) = 0;
 
+	UFUNCTION(Category = "AI")
+	virtual void StartFollowing() = 0;
+
 	ENPCState IsCollected() const { return this->NPCState; }
 };

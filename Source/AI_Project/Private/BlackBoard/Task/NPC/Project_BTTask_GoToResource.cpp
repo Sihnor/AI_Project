@@ -25,6 +25,11 @@ void UProject_BTTask_GoToResource::TickTask(UBehaviorTreeComponent& OwnerComp, u
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	if (Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->GetNPCState() != ENPCState::Commanded)
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
+
 	if (OwnerComp.GetAIOwner()->GetMoveStatus() == EPathFollowingStatus::Type::Idle)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

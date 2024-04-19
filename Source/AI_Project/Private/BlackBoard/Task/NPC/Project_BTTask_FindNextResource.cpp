@@ -8,11 +8,19 @@
 
 EBTNodeResult::Type UProject_BTTask_FindNextResource::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	bNotifyTick = true;
+
+	AProject_NPC_AIController* const NPC_AIController = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner());
+	const bool IsThereANextResource = NPC_AIController->IsThereARemainingResource();
+
+	if (!IsThereANextResource)
+	{
+		NPC_AIController->Collect();
+		return EBTNodeResult::Failed;
+	}
+	
 	FVector ResourcePosition;
-
-	bool IsThereANextResource = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->CanGetNextResourcePosition(ResourcePosition);
-
-	if (!IsThereANextResource) return EBTNodeResult::Failed;
+	NPC_AIController->GetNextResourcePosition(ResourcePosition);
 
 	UBlackboardComponent* const Blackboard = OwnerComp.GetBlackboardComponent();
 	if (!Blackboard) return EBTNodeResult::Failed;
@@ -20,4 +28,12 @@ EBTNodeResult::Type UProject_BTTask_FindNextResource::ExecuteTask(UBehaviorTreeC
 	Blackboard->SetValueAsVector(TEXT("ResourcePosition"), ResourcePosition);
 
 	return EBTNodeResult::Succeeded;
+}
+
+void UProject_BTTask_FindNextResource::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	if (Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->GetNPCState() != ENPCState::Commanded)
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
 }

@@ -41,4 +41,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual bool RegisterWorker();
+	virtual void UnregisterWorker();
 };
