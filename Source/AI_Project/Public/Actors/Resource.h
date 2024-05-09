@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ResourceType.h"
 #include "Resource.generated.h"
 
 
@@ -42,4 +41,9 @@ public:
 	
 	virtual bool RegisterWorker();
 	virtual void UnregisterWorker();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|GameEvents")
+	TObjectPtr<class UProject_DA_GameEvent_Zero> CollectResourceEvent;	
+
+	virtual void CollectResource() PURE_VIRTUAL(); 
 };

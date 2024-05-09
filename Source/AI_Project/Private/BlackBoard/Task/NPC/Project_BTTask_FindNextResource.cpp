@@ -15,7 +15,7 @@ EBTNodeResult::Type UProject_BTTask_FindNextResource::ExecuteTask(UBehaviorTreeC
 
 	if (!IsThereANextResource)
 	{
-		NPC_AIController->Collect();
+		NPC_AIController->Collect_NPC_AI();
 		return EBTNodeResult::Failed;
 	}
 	

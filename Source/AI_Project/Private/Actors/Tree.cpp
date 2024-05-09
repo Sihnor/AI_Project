@@ -3,6 +3,8 @@
 
 #include "AI_Project/Public/Actors/Tree.h"
 
+#include "AI/Project_DA_GameEvent_Zero.h"
+
 
 // Sets default values
 ATree::ATree()
@@ -33,5 +35,10 @@ EResourceType ATree::GetResourceType()
 int32 ATree::GetRemainingPlaces()
 {
 	return this->RemainingPlacesNPCsCanCollect;
+}
+
+void ATree::CollectResource()
+{
+	this->CollectResourceEvent->OnEvent.Broadcast(this->ResourceType);
 }
 

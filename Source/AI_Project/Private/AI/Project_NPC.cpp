@@ -4,7 +4,7 @@
 #include "AI_Project/Public/AI/Project_NPC.h"
 
 #include "AI/Project_DataAsset_ListAI.h"
-#include "AI/Project_DA_GameEvent.h"
+#include "AI/Project_DA_GameEvent_FHitResults.h"
 #include "AI/Project_NPC_AIController.h"
 #include "Components/SphereComponent.h"
 
@@ -49,6 +49,6 @@ void AProject_NPC::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		if (controller->IsCollected() != ENPCState::Masterless) return;
 
-		controller->Collect();
+		controller->Collect_NPC_AI();
 	}	
 }

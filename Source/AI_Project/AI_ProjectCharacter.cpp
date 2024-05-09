@@ -13,7 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "Actors/Stone.h"
 #include "Actors/Tree.h"
-#include "AI/Project_DA_GameEvent.h"
+#include "AI/Project_DA_GameEvent_FHitResults.h"
 #include "AI/Project_DA_GameEvent_Vector.h"
 #include "Components/SphereComponent.h"
 

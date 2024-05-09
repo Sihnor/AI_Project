@@ -11,7 +11,7 @@ EBTNodeResult::Type UProject_BTTask_CheckRemainingSpace::ExecuteTask(UBehaviorTr
 	AProject_NPC_AIController* const Controller = Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner());
 	
 	if (Controller->RegisterResource()) return EBTNodeResult::Succeeded;
-	if (!Controller->IsThereARemainingResource()) Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->Collect();
+	if (!Controller->IsThereARemainingResource()) Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->Collect_NPC_AI();
 
 	return EBTNodeResult::Failed;
 }

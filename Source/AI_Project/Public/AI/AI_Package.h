@@ -28,19 +28,19 @@ protected:
 	
 
 public:
-	virtual void Collect()
+	virtual void Collect_NPC_AI()
 	{
 		this->NPCState = ENPCState::Following;
 	}
 
 	UFUNCTION(Category = "AI")
-	virtual void Summon(TArray<FHitResult> targets) = 0;
+	virtual void Summon_NPC_AI(TArray<FHitResult> targets) = 0;
 
 	UFUNCTION(Category = "AI")
-	virtual void Command(TArray<FHitResult> resource) = 0;
+	virtual void Command_NPC_AI(TArray<FHitResult> resource) = 0;
 
 	UFUNCTION(Category = "AI")
-	virtual void StartFollowing() = 0;
+	virtual void StartFollowing_NPC_AI() = 0;
 
 	ENPCState IsCollected() const { return this->NPCState; }
 };

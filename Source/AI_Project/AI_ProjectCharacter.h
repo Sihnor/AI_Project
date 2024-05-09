@@ -63,10 +63,10 @@ class AAI_ProjectCharacter : public ACharacter
 #pragma region PropertiesGameEvents
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UProject_DA_GameEvent> CommandEvent;
+	TObjectPtr<class UProject_DA_GameEvent_FHitResults> CommandEvent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UProject_DA_GameEvent> SummonEvent;
+	TObjectPtr<class UProject_DA_GameEvent_FHitResults> SummonEvent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "NPCs|GameEvents", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UProject_DA_GameEvent_Vector> FollowEvent;

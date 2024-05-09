@@ -22,4 +22,6 @@ public:
 
 	EResourceType GetResourceType();
 	int32 GetRemainingPlaces();
+
+	virtual void CollectResource() override;
 };

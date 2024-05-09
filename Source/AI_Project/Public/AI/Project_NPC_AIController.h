@@ -23,13 +23,13 @@ public:
 public:
 	// Implement IAI_Package interface
 	UFUNCTION()
-	virtual void Collect() override;
+	virtual void Collect_NPC_AI() override;
 	UFUNCTION()
-	virtual void Summon(TArray<FHitResult> npcs) override;
+	virtual void Summon_NPC_AI(TArray<FHitResult> npcs) override;
 	UFUNCTION()
-	virtual void Command(TArray<FHitResult> resources) override;
+	virtual void Command_NPC_AI(TArray<FHitResult> resources) override;
 	UFUNCTION()
-	virtual void StartFollowing() override;
+	virtual void StartFollowing_NPC_AI() override;
 
 	UFUNCTION()
 	void Follow(FVector location);
@@ -39,10 +39,10 @@ public:
 	UProject_DataAsset_ListAI* GetListAI() const { return this->ListAI.Get(); }
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|GameEvents")
-	TObjectPtr<class UProject_DA_GameEvent> CommandEvent;
+	TObjectPtr<class UProject_DA_GameEvent_FHitResults> CommandEvent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI|GameEvents")
-	TObjectPtr<class UProject_DA_GameEvent> SummonEvent;
+	TObjectPtr<class UProject_DA_GameEvent_FHitResults> SummonEvent;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
@@ -85,6 +85,9 @@ public:
 	bool GetIsWorking() const { return this->bIsWorking; }
 
 	void FaceResource();
+
+	float ElapsedTime = 0.0f;
+	void WorkOnResource(float DeltaSeconds);
 	
 
 private:

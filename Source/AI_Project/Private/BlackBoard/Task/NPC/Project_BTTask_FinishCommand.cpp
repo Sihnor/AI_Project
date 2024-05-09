@@ -8,7 +8,7 @@
 EBTNodeResult::Type UBTTask_FinishCommand::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     bNotifyTick = true;
-    Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->Collect();
+    Cast<AProject_NPC_AIController>(OwnerComp.GetAIOwner())->Collect_NPC_AI();
 
     return EBTNodeResult::Failed;
 }

@@ -5,7 +5,7 @@
 
 #include "Actors/Resource.h"
 #include "AI/Project_DataAsset_ListAI.h"
-#include "AI/Project_DA_GameEvent.h"
+#include "AI/Project_DA_GameEvent_FHitResults.h"
 #include "AI/Project_DA_GameEvent_Vector.h"
 #include "AI/Project_NPC.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -42,12 +42,12 @@ void AProject_NPC_AIController::OnPossess(APawn* InPawn)
 	}
 }
 
-void AProject_NPC_AIController::Collect()
+void AProject_NPC_AIController::Collect_NPC_AI()
 {
-	IAI_Package::Collect();
+	IAI_Package::Collect_NPC_AI();
 	
-	if (this->CommandEvent) this->CommandEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Command);
-	if (this->SummonEvent) this->SummonEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Summon);
+	if (this->CommandEvent) this->CommandEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Command_NPC_AI);
+	if (this->SummonEvent) this->SummonEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Summon_NPC_AI);
 	if (this->FollowEvent) this->FollowEvent.Get()->OnEvent.AddUniqueDynamic(this, &AProject_NPC_AIController::Follow);
 
 	if (this->ListAI) this->ListAI->RegisterAI(this);
@@ -55,7 +55,7 @@ void AProject_NPC_AIController::Collect()
 	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
 }
 
-void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
+void AProject_NPC_AIController::Summon_NPC_AI(TArray<FHitResult> npcs)
 {
 	if (this->NPCState == ENPCState::Masterless) return;
 	
@@ -64,11 +64,12 @@ void AProject_NPC_AIController::Summon(TArray<FHitResult> npcs)
 	{
 		if (result.GetActor()->GetInstigatorController() != this) continue;
 
-		StartFollowing();
+		StartFollowing_NPC_AI();
+		this->ElapsedTime = 0.0f;
 	}
 }
 
-void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
+void AProject_NPC_AIController::Command_NPC_AI(TArray<FHitResult> resources)
 {
 	if (this->NPCState != ENPCState::Following) return;
 
@@ -85,7 +86,7 @@ void AProject_NPC_AIController::Command(TArray<FHitResult> resources)
 	if (BlackboardComponent) BlackboardComponent->SetValueAsEnum(TEXT("NPC_State"), static_cast<uint8>(this->NPCState));
 }
 
-void AProject_NPC_AIController::StartFollowing()
+void AProject_NPC_AIController::StartFollowing_NPC_AI()
 {
 	this->UnRegisterResource();
 	this->StopWork();
@@ -138,4 +139,15 @@ void AProject_NPC_AIController::FaceResource()
 
 	FRotator const Rotator = FRotationMatrix::MakeFromX(Direction).Rotator();
 	ControlledPawn->SetActorRotation(Rotator);
+}
+
+void AProject_NPC_AIController::WorkOnResource(float DeltaSeconds)
+{
+	this->ElapsedTime += DeltaSeconds;
+
+	if (this->ElapsedTime >= 5.0f)
+	{
+		this->ElapsedTime = 0.0f;
+		this->ResourcesList[this->ResourceIndex - 1]->CollectResource();
+	}
 }

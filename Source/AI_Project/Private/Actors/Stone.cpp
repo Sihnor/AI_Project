@@ -3,6 +3,8 @@
 
 #include "AI_Project/Public/Actors/Stone.h"
 
+#include "AI/Project_DA_GameEvent_Zero.h"
+
 
 // Sets default values
 AStone::AStone()
@@ -33,4 +35,9 @@ EResourceType AStone::GetResourceType()
 int32 AStone::GetRemainingPlaces()
 {
 	return this->RemainingPlacesNPCsCanCollect;
+}
+
+void AStone::CollectResource()
+{
+	this->CollectResourceEvent->OnEvent.Broadcast(this->ResourceType);
 }

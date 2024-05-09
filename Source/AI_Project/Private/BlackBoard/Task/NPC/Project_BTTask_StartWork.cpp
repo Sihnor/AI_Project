@@ -3,6 +3,7 @@
 
 #include "BlackBoard/Task/NPC/Project_BTTask_StartWork.h"
 
+#include "AI/Project_DA_GameEvent_FHitResults.h"
 #include "AI/Project_NPC_AIController.h"
 
 EBTNodeResult::Type UProject_BTTask_StartWork::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -13,8 +14,8 @@ EBTNodeResult::Type UProject_BTTask_StartWork::ExecuteTask(UBehaviorTreeComponen
 
 	Controller->StartWork();
 	Controller->FaceResource();
-	
-	
+
+
 	return EBTNodeResult::InProgress;
 }
 
@@ -26,6 +27,8 @@ void UProject_BTTask_StartWork::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 
 	if (Controller)
 	{
+		Controller->WorkOnResource(DeltaSeconds);
+
 		if (Controller->GetNPCState() != ENPCState::Commanded)
 		{
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
